@@ -1,5 +1,7 @@
 # agentic-qa-gate — an AI-agent merge gate built on Playwright
 
+**▶ Live demo: https://pvom.github.io/agentic-qa-gate/** (open the app the gate audits)
+
 > ⚠️ Sanitized portfolio sample. This documents a QA system running in production for
 > **MedTrack** (a healthcare SaaS with 77 active users). Credentials, hosts, emails and
 > proprietary code are removed; the demo runs on a throwaway app with synthetic data.

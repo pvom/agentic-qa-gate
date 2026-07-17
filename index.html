@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>agentic-qa-gate — live demo</title>
+  <style>
+    :root { --bg:#0d1117; --card:#161b22; --line:#30363d; --fg:#e6edf3; --dim:#8b949e; --accent:#2f81f7; --good:#3fb950; --bad:#f85149; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.6 -apple-system,"Segoe UI",Roboto,sans-serif; }
+    .wrap { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px; }
+    h1 { font-size: 26px; margin: 0 0 6px; }
+    .lede { color: var(--dim); font-size: 16px; margin: 0 0 28px; }
+    h2 { font-size: 16px; margin: 34px 0 12px; }
+    .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 12px; }
+    a.tile { display:block; text-decoration:none; color:var(--fg); background:var(--card); border:1px solid var(--line);
+             border-radius:10px; padding:16px; transition: border-color .15s; }
+    a.tile:hover { border-color: var(--accent); }
+    a.tile .t { font-weight: 600; }
+    a.tile .d { color: var(--dim); font-size: 13px; margin-top: 4px; }
+    a.tile.bad:hover { border-color: var(--bad); }
+    .badge { display:inline-block; font-size:12px; font-weight:600; border-radius:20px; padding:2px 10px; }
+    .badge.good { background:#12341f; color:var(--good); } .badge.bad { background:#3d1418; color:var(--bad); }
+    code { background:#1f2630; padding:1px 6px; border-radius:5px; font-size:13px; }
+    ul { padding-left: 20px; } li { margin: 4px 0; }
+    .foot { color: var(--dim); font-size: 13px; margin-top: 34px; border-top:1px solid var(--line); padding-top: 16px; }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>agentic-qa-gate <span class="badge good">live demo</span></h1>
+    <p class="lede">An AI-agent merge gate on Playwright — behaviour + visual + a <strong>runtime
+      design-system color audit</strong> (reads <code>getComputedStyle</code> of every element and
+      compares it to an authorized palette). This page lets you open the exact app the gate audits.</p>
+
+    <div class="card">
+      <strong>How to read this demo:</strong> the first three pages are <span class="badge good">on-brand</span>
+      (every colour is in the authorized palette). The last one has <span class="badge bad">planted violations</span>
+      (foreign colours like <code>#ff00ff</code>, off-scale spacing) — exactly what the runtime audit rejects.
+    </div>
+
+    <h2>Open the demo app the gate runs against</h2>
+    <div class="grid">
+      <a class="tile" href="demo-app/dashboard.html"><div class="t">Dashboard</div><div class="d">clean · on-brand</div></a>
+      <a class="tile" href="demo-app/financial.html"><div class="t">Financial</div><div class="d">clean · on-brand</div></a>
+      <a class="tile" href="demo-app/settings.html"><div class="t">Settings</div><div class="d">clean · on-brand</div></a>
+      <a class="tile bad" href="demo-app/broken.html"><div class="t">Broken (fixture)</div><div class="d">planted foreign colours — what the audit catches</div></a>
+    </div>
+
+    <h2>What the gate does</h2>
+    <ul>
+      <li><strong>Behaviour</strong> — Playwright e2e across viewports + unit tests + typecheck.</li>
+      <li><strong>Visual regression</strong> — screenshots across 8 viewports × pages vs a baseline, mobile-first.</li>
+      <li><strong>DS static audit</strong> — scans source for hardcoded colours / arbitrary spacing / a11y.</li>
+      <li><strong>DS runtime color audit</strong> — the standout: computed colour vs authorized palette, in a real browser.</li>
+    </ul>
+
+    <p>The AI agent runs all of this and returns an evidence-based <code>APPROVE / REJECT</code> verdict.
+      See a <a href="https://github.com/pvom/agentic-qa-gate/blob/main/reports/sample-qa-report.md">sample verdict report</a>
+      and the <a href="https://github.com/pvom/agentic-qa-gate">full source on GitHub</a>.</p>
+
+    <div class="foot">
+      Sanitized portfolio sample · synthetic app + synthetic palette · this mirrors a QA system running in
+      production for MedTrack (a healthcare SaaS). — <a href="https://github.com/pvom/agentic-qa-gate">pvom/agentic-qa-gate</a>
+    </div>
+  </div>
+</body>
+</html>
