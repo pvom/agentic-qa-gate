@@ -3,68 +3,147 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>agentic-qa-gate — live demo</title>
+  <title>agentic-qa-gate — live color audit</title>
   <style>
     :root { --bg:#0d1117; --card:#161b22; --line:#30363d; --fg:#e6edf3; --dim:#8b949e; --accent:#2f81f7; --good:#3fb950; --bad:#f85149; }
     * { box-sizing: border-box; }
     body { margin:0; background:var(--bg); color:var(--fg); font:15px/1.6 -apple-system,"Segoe UI",Roboto,sans-serif; }
-    .wrap { max-width: 860px; margin: 0 auto; padding: 40px 20px 80px; }
-    h1 { font-size: 26px; margin: 0 0 6px; }
-    .lede { color: var(--dim); font-size: 16px; margin: 0 0 28px; }
-    h2 { font-size: 16px; margin: 34px 0 12px; }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 36px 20px 80px; }
+    h1 { font-size: 24px; margin: 0 0 6px; }
+    .lede { color: var(--dim); font-size: 15px; margin: 0 0 24px; }
+    h2 { font-size: 16px; margin: 30px 0 12px; }
     .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 12px; }
-    a.tile { display:block; text-decoration:none; color:var(--fg); background:var(--card); border:1px solid var(--line);
-             border-radius:10px; padding:16px; transition: border-color .15s; }
-    a.tile:hover { border-color: var(--accent); }
-    a.tile .t { font-weight: 600; }
-    a.tile .d { color: var(--dim); font-size: 13px; margin-top: 4px; }
-    a.tile.bad:hover { border-color: var(--bad); }
-    .badge { display:inline-block; font-size:12px; font-weight:600; border-radius:20px; padding:2px 10px; }
-    .badge.good { background:#12341f; color:var(--good); } .badge.bad { background:#3d1418; color:var(--bad); }
+    .buttons { display:flex; gap:8px; flex-wrap:wrap; margin:14px 0; }
+    button { background:#21262d; color:var(--fg); border:1px solid var(--line); border-radius:8px; padding:9px 14px; cursor:pointer; font-size:14px; }
+    button:hover { border-color: var(--accent); }
+    button.primary { background:#1f6feb33; border-color:#1f6feb; font-weight:600; }
+    button.warn { background:#3d141833; border-color:var(--bad); color:#ffb3ae; }
+    /* ---- sample app UI, built from the AUTHORIZED palette ---- */
+    #sampleApp { border:1px solid var(--line); border-radius:10px; overflow:hidden; color:#e6e9ef; }
+    #sampleApp .top { background:#141924; color:#e6e9ef; padding:12px 16px; font-weight:700; }
+    #sampleApp .body { background:#0b0e14; padding:16px; display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    #sampleApp .tile { background:#232c3a; color:#e6e9ef; border-radius:8px; padding:14px; }
+    #sampleApp .tile .k { color:#93a0b0; font-size:12px; }
+    #sampleApp .tile .v { font-size:22px; font-weight:700; }
+    #sampleApp .cta { background:#2563eb; color:#ffffff; border:none; border-radius:8px; padding:8px 14px; }
+    #sampleApp .ok { color:#16a34a; font-weight:600; }
+    .result { margin-top:12px; }
+    .verdict { font-size:18px; font-weight:800; }
+    .verdict.pass { color:var(--good); } .verdict.fail { color:var(--bad); }
+    .foreign { margin-top:8px; }
+    .foreign div { display:flex; align-items:center; gap:8px; font-size:13px; color:#f0883e; margin:4px 0; }
+    .chip { width:16px; height:16px; border-radius:4px; border:1px solid #0006; }
     code { background:#1f2630; padding:1px 6px; border-radius:5px; font-size:13px; }
-    ul { padding-left: 20px; } li { margin: 4px 0; }
-    .foot { color: var(--dim); font-size: 13px; margin-top: 34px; border-top:1px solid var(--line); padding-top: 16px; }
+    a.tile2 { display:block; text-decoration:none; color:var(--fg); background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px; }
+    a.tile2:hover { border-color: var(--accent); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:10px; }
+    .foot { color:var(--dim); font-size:13px; margin-top:30px; border-top:1px solid var(--line); padding-top:16px; }
     a { color: var(--accent); }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <h1>agentic-qa-gate <span class="badge good">live demo</span></h1>
-    <p class="lede">An AI-agent merge gate on Playwright — behaviour + visual + a <strong>runtime
-      design-system color audit</strong> (reads <code>getComputedStyle</code> of every element and
-      compares it to an authorized palette). This page lets you open the exact app the gate audits.</p>
+    <h1>agentic-qa-gate · live color audit</h1>
+    <p class="lede">The standout check in this gate: a <strong>runtime design-system color audit</strong>. It
+      walks a rendered UI, reads the <strong>computed</strong> colour of every element (<code>getComputedStyle</code>),
+      and flags any colour not in the authorized palette. That's the actual technique — <strong>running right
+      here in your browser</strong>. Break the UI and watch the audit catch it.</p>
 
     <div class="card">
-      <strong>How to read this demo:</strong> the first three pages are <span class="badge good">on-brand</span>
-      (every colour is in the authorized palette). The last one has <span class="badge bad">planted violations</span>
-      (foreign colours like <code>#ff00ff</code>, off-scale spacing) — exactly what the runtime audit rejects.
+      <h2 style="margin-top:0">Sample UI (built from the authorized palette)</h2>
+      <div id="sampleApp">
+        <div class="top">Fleet dashboard</div>
+        <div class="body">
+          <div class="tile"><div class="k">Active vehicles</div><div class="v">128</div></div>
+          <div class="tile"><div class="k">This month</div><div class="v">€24,910</div></div>
+          <div class="tile"><div class="k">Status</div><div class="v"><span class="ok">All systems OK</span></div></div>
+          <div class="tile"><div class="k">Action</div><div class="v"><button class="cta">Export</button></div></div>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="primary" id="run">🔍 Run color audit</button>
+        <button class="warn" id="inject">💥 Inject a violation</button>
+        <button id="fix">↺ Reset UI</button>
+      </div>
+      <div class="result" id="result"></div>
     </div>
 
-    <h2>Open the demo app the gate runs against</h2>
+    <h2>The authorized palette</h2>
+    <div class="card"><div id="palette" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+      <p style="color:var(--dim);font-size:13px;margin:12px 0 0">Any rendered colour outside this set is a
+        <strong>foreign colour</strong> → the gate rejects the merge. Because it reads the <em>computed</em> style
+        in a real browser, it catches drift that source review misses (a token silently resolving to the wrong hex).</p>
+    </div>
+
+    <h2>Open the full demo app the gate audits</h2>
     <div class="grid">
-      <a class="tile" href="demo-app/dashboard.html"><div class="t">Dashboard</div><div class="d">clean · on-brand</div></a>
-      <a class="tile" href="demo-app/financial.html"><div class="t">Financial</div><div class="d">clean · on-brand</div></a>
-      <a class="tile" href="demo-app/settings.html"><div class="t">Settings</div><div class="d">clean · on-brand</div></a>
-      <a class="tile bad" href="demo-app/broken.html"><div class="t">Broken (fixture)</div><div class="d">planted foreign colours — what the audit catches</div></a>
+      <a class="tile2" href="demo-app/dashboard.html">Dashboard <span style="color:var(--good)">· clean</span></a>
+      <a class="tile2" href="demo-app/financial.html">Financial <span style="color:var(--good)">· clean</span></a>
+      <a class="tile2" href="demo-app/settings.html">Settings <span style="color:var(--good)">· clean</span></a>
+      <a class="tile2" href="demo-app/broken.html">Broken <span style="color:var(--bad)">· planted violations</span></a>
     </div>
-
-    <h2>What the gate does</h2>
-    <ul>
-      <li><strong>Behaviour</strong> — Playwright e2e across viewports + unit tests + typecheck.</li>
-      <li><strong>Visual regression</strong> — screenshots across 8 viewports × pages vs a baseline, mobile-first.</li>
-      <li><strong>DS static audit</strong> — scans source for hardcoded colours / arbitrary spacing / a11y.</li>
-      <li><strong>DS runtime color audit</strong> — the standout: computed colour vs authorized palette, in a real browser.</li>
-    </ul>
-
-    <p>The AI agent runs all of this and returns an evidence-based <code>APPROVE / REJECT</code> verdict.
-      See a <a href="https://github.com/pvom/agentic-qa-gate/blob/main/reports/sample-qa-report.md">sample verdict report</a>
-      and the <a href="https://github.com/pvom/agentic-qa-gate">full source on GitHub</a>.</p>
 
     <div class="foot">
-      Sanitized portfolio sample · synthetic app + synthetic palette · this mirrors a QA system running in
-      production for MedTrack (a healthcare SaaS). — <a href="https://github.com/pvom/agentic-qa-gate">pvom/agentic-qa-gate</a>
+      The gate also runs Playwright behaviour + visual regression across viewports, and an AI agent returns an
+      evidence-based <code>APPROVE / REJECT</code>. See a
+      <a href="https://github.com/pvom/agentic-qa-gate/blob/main/reports/sample-qa-report.md">sample verdict</a> ·
+      <a href="https://github.com/pvom/agentic-qa-gate">source on GitHub</a>. Mirrors a QA system in production for MedTrack.
     </div>
   </div>
+
+<script>
+let PALETTE=null;
+const $=id=>document.getElementById(id);
+function rgbToHex(str){
+  const m=str.match(/rgba?\(([^)]+)\)/);if(!m)return null;
+  const p=m[1].split(',').map(s=>parseFloat(s.trim()));
+  if(p.length>=4&&p[3]===0)return null; // fully transparent -> ignore
+  const h=p.slice(0,3).map(v=>Math.round(v).toString(16).padStart(2,'0')).join('');
+  return '#'+h;
+}
+function audit(){
+  const allowed=new Set(PALETTE.map(c=>c.toLowerCase()));
+  const root=$('sampleApp');
+  const foreign=[];
+  root.querySelectorAll('*').forEach(el=>{
+    const cs=getComputedStyle(el);
+    // border-color only counts when the border is actually rendered (width > 0)
+    const hasBorder=['top','right','bottom','left'].some(s=>parseFloat(cs.getPropertyValue('border-'+s+'-width'))>0);
+    const props=hasBorder?['color','background-color','border-color']:['color','background-color'];
+    for(const prop of props){
+      const hex=rgbToHex(cs.getPropertyValue(prop));
+      if(hex && !allowed.has(hex.toLowerCase())){
+        foreign.push({hex,prop,sel:el.tagName.toLowerCase()+(el.className?'.'+String(el.className).trim().split(/\s+/).join('.'):'')});
+      }
+    }
+  });
+  // dedupe by hex+prop+sel
+  const seen=new Set();const uniq=foreign.filter(f=>{const k=f.hex+f.prop+f.sel;if(seen.has(k))return false;seen.add(k);return true;});
+  render(uniq);
+}
+function render(foreign){
+  const pass=foreign.length===0;
+  $('result').innerHTML='<div class="verdict '+(pass?'pass':'fail')+'">'+(pass?'✅ APPROVE — 0 foreign colours':'❌ REJECT — '+foreign.length+' foreign colour'+(foreign.length>1?'s':'')+' detected')+'</div>'+
+    (pass?'':'<div class="foreign">'+foreign.map(f=>'<div><span class="chip" style="background:'+f.hex+'"></span><code>'+f.hex+'</code> · '+f.prop+' · <span style="color:var(--dim)">'+f.sel+'</span></div>').join('')+'</div>');
+}
+$('run').onclick=audit;
+$('inject').onclick=()=>{
+  if(!$('violation')){
+    const t=document.createElement('div');t.id='violation';t.className='tile';
+    t.style.background='#7c3aed';t.style.color='#ff00ff';
+    t.innerHTML='<div class="k">Promo</div><div class="v">Injected off-palette element</div>';
+    $('sampleApp').querySelector('.body').appendChild(t);
+  }
+  audit();
+};
+$('fix').onclick=()=>{const v=$('violation');if(v)v.remove();$('result').innerHTML='';};
+
+fetch('e2e/helpers/palette.json').then(r=>r.json()).then(j=>{
+  PALETTE=j.colors;
+  $('palette').innerHTML=PALETTE.map(c=>'<div title="'+c+'" style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--dim)"><span style="width:20px;height:20px;border-radius:5px;border:1px solid #0006;background:'+c+'"></span>'+c+'</div>').join('');
+  audit();
+}).catch(e=>{$('result').textContent='Could not load palette: '+e.message;});
+</script>
 </body>
 </html>
