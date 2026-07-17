@@ -1,0 +1,13 @@
+{
+  "_doc": "Authorized palette, generated from the design system. Any rendered color NOT here is a 'foreign color' = fail.",
+  "colors": [
+    "#0b0e14",
+    "#141924",
+    "#e6e9ef",
+    "#93a0b0",
+    "#2563eb",
+    "#16a34a",
+    "#232c3a",
+    "#ffffff"
+  ]
+}

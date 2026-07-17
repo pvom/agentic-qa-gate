@@ -1,0 +1,16 @@
+{
+  "name": "agentic-qa-gate",
+  "version": "1.0.0",
+  "private": true,
+  "description": "An AI-agent merge gate built on Playwright: behaviour + visual regression + runtime design-system color compliance.",
+  "scripts": {
+    "demo": "node demo-app/serve.js",
+    "test": "playwright test",
+    "test:color": "playwright test e2e/ds-color-audit.spec.ts",
+    "audit:static": "bash scripts/ds-static-audit.sh demo-app"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.0"
+  },
+  "license": "MIT"
+}
