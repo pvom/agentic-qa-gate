@@ -3,3 +3,4 @@ test-results/
 playwright-report/
 /e2e/**/__screenshots__/
 .DS_Store
+.portao-entrega/selo.json

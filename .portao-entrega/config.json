@@ -1,0 +1,9 @@
+{
+ "_porque": "Declaracao unica do que tem de passar. Lida pelo portao local (pre-commit) E pelo CI, para que nao possam divergir: acrescentar uma verificacao aqui aplica-a nos dois sitios.",
+ "_sem_typecheck": "Este repo nao tem TypeScript como dependencia; `npx tsc` tentaria instalar um pacote `tsc` abandonado e sem relacao. Declarar um verificador que nao existe seria pior que nao ter nenhum.",
+ "dir": "",
+ "suite": [
+  "npm run audit:static",
+  "npx playwright test"
+ ]
+}
