@@ -12,12 +12,31 @@ jobs:
         with:
           node-version: 20
       - run: npm ci || npm install
-      - name: DS static audit
-        run: bash scripts/ds-static-audit.sh demo-app
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium
-      - name: Run the gate (behaviour + visual + runtime color audit)
-        run: npx playwright test
+
+      # The checks are NOT listed here. They are declared once in
+      # .portao-entrega/config.json, which the local pre-commit gate reads too.
+      # Two enforcers, one declaration — so they cannot drift apart.
+      - name: Run the declared gate
+        run: |
+          node -e '
+            const {execSync} = require("child_process");
+            const c = require("./.portao-entrega/config.json");
+            const cmds = [c.typecheck, ...(c.suite || [])].filter(Boolean);
+            let failed = [];
+            for (const cmd of cmds) {
+              process.stdout.write("\n==> " + cmd + "\n");
+              try { execSync(cmd, {stdio: "inherit", cwd: c.dir || "."}); }
+              catch (e) { failed.push(cmd); }
+            }
+            if (failed.length) {
+              process.stdout.write("\nGATE BLOCKED — failed: " + failed.join(" · ") + "\n");
+              process.exit(1);
+            }
+            process.stdout.write("\nGATE PASSED — " + cmds.length + " checks\n");
+          '
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
